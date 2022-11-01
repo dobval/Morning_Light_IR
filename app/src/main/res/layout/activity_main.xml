@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.MorningLightIR.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Theme.MorningLightIR.PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_main" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="15dp"
+        android:backgroundTint="@color/purple_500"
+        android:tint="#000000"
+        app:fabSize="auto"
+        app:srcCompat="@android:drawable/ic_menu_mylocation"
+        app:useCompatPadding="true"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/offButton"
+        android:layout_width="44dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:backgroundTint="@color/purple_500"
+        android:visibility="invisible"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/fab"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@android:drawable/ic_lock_power_off"
+        app:useCompatPadding="false"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/upArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="250dp"
+        android:backgroundTint="@color/purple_500"
+        android:visibility="invisible"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/fab"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@android:drawable/arrow_up_float"
+        app:useCompatPadding="false"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/downArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="175dp"
+        android:backgroundTint="@color/purple_500"
+        android:visibility="invisible"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:layout_anchor="@+id/fab"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@android:drawable/arrow_down_float"
+        app:useCompatPadding="false"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <Button
+        android:id="@+id/wakeTimeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="popTimePicker"
+        android:text="Waking Time"
+        android:translationY="75dp"
+        app:layout_anchor="@+id/appBarLayout"
+        app:layout_anchorGravity="bottom|center" />
+
+    <Button
+        android:id="@+id/OffButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:enabled="true"
+        android:text="Turn Off"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="center" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="124dp"
+        android:text="100% light at: -- : --"
+        android:textAllCaps="false"
+        android:textSize="24sp"
+        android:textStyle="bold|italic"
+        android:translationY="-100dp"
+        app:layout_anchor="@+id/OffButton"
+        app:layout_anchorGravity="center" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
