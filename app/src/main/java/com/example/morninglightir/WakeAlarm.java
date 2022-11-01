@@ -12,7 +12,7 @@ public class WakeAlarm extends BroadcastReceiver{
 
     static byte alarmTimes = 0;
     //FOR TESTING: 1 min (SHOULD BE 6 min)
-    static long intervalMil = 1000 * 60; //* 6; ////1000ms * 60(sec) * 6(min), *0.85 ~32.12502...min ; 9 times *0.85^time
+    static long intervalMil = 1000 * 60 * 6; ////1000ms * 60(sec) * 6(min), *0.85 ~32.12502...min ; 9 times *0.85^time
 
     @Override
     public void onReceive(Context context, Intent intent) {
