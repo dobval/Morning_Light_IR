@@ -179,6 +179,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
             {
+                final MediaPlayer lightSaber = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_sound);
+                lightSaber.start();
                 hour = selectedHour;
                 minute = selectedMinute;
                 wakeTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
