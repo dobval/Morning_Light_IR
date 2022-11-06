@@ -5,13 +5,14 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.hardware.ConsumerIrManager;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 public class WakeAlarm extends BroadcastReceiver{
 
     static byte alarmTimes = 0;
-    //FOR TESTING: 1 min (SHOULD BE 6 min)
     static long intervalMil = 1000 * 60 * 6; ////1000ms * 60(sec) * 6(min), *0.85 ~32.12502...min ; 9 times *0.85^time
 
     @Override
@@ -29,16 +30,18 @@ public class WakeAlarm extends BroadcastReceiver{
                 562, 562, 562, 562,  562, 1688, 562, 1688, 562, 1688, 562, 1688, 562, 1688, 562,
                 1688, 562, 1688, 562, 1688, 45000};
         if (alarmTimes == 0) {
-            MainActivity.getInstance().getInfraRed().transmit(frequency, tenIR);
+            MainActivity.getmInstanceActivity().getInfraRed().transmit(frequency, tenIR);
+            MainActivity.getmInstanceActivity().setAlarm(intervalMil+MainActivity.RTCMillis);
             alarmTimes = 1;
             intervalMil*=0.85;
-            MainActivity.getInstance().setAlarm(intervalMil);
+            MainActivity.RTCMillis += intervalMil;
         }
         else if (alarmTimes < 10){
-            MainActivity.getInstance().getInfraRed().transmit(frequency, upIR);
+            MainActivity.getmInstanceActivity().getInfraRed().transmit(frequency, upIR);
             alarmTimes++;
             intervalMil*=0.85;
-            MainActivity.getInstance().setAlarm(intervalMil);
+            MainActivity.getmInstanceActivity().setAlarm(intervalMil+MainActivity.RTCMillis);
+            MainActivity.RTCMillis += intervalMil;
         }
         else {
             //getting the alarm manager
@@ -46,11 +49,13 @@ public class WakeAlarm extends BroadcastReceiver{
             //creating a new intent specifying the broadcast receiver
             Intent i = new Intent(context, WakeAlarm.class);
             //creating a pending intent using the intent
-            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
+            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
             am.cancel(pi);
 
             Toast.makeText(context, "Alarm finished", Toast.LENGTH_SHORT).show();
 
+            TextView Reached100At = MainActivity.getmInstanceActivity().findViewById(R.id.textView3);
+            Reached100At.setText("starting light at: --:--");
             //resetting
             alarmTimes = 0;
             intervalMil = 1000 * 60 * 6;

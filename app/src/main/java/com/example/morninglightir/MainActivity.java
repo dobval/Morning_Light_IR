@@ -2,10 +2,12 @@ package com.example.morninglightir;
 
 import android.hardware.ConsumerIrManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
@@ -23,21 +25,31 @@ import android.widget.Button;
 
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import java.lang.ref.WeakReference;
+import java.time.LocalTime;
 import java.util.Locale;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    AlarmManager am = null;
+    public static WeakReference<MainActivity> weakActivity;
+
+    public static MainActivity getmInstanceActivity() {
+        return weakActivity.get();
+    }
+
+    public static long RTCMillis = 0;
+    static AlarmManager am = null;
     ConsumerIrManager infraRed = null;
-    
-    static MainActivity mainActivity;
+
+    //TextView Reached100At;
 
     Button wakeTimeButton, OffButton;
     int hour, minute;
@@ -73,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         infraRed = (ConsumerIrManager) getSystemService(CONSUMER_IR_SERVICE);
-        mainActivity = this;
+        weakActivity = new WeakReference<>(MainActivity.this);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -90,26 +102,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), WakeAlarm.class);
-                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, PendingIntent.FLAG_IMMUTABLE);
+                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, 0);
                 if (am == null)
                 {
                     am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     Toast.makeText(getApplicationContext(), "Alarm already cancelled", Toast.LENGTH_SHORT).show();
                     am.cancel(pi);
+                    am = null;
                 }
                 else
                 {
                     am.cancel(pi);
+                    am = null;
                     Toast.makeText(getApplicationContext(), "Alarm cancelled", Toast.LENGTH_SHORT).show();
                 }
-                WakeAlarm WakeAlarmObj = new WakeAlarm();
-                WakeAlarmObj.alarmTimes = 0;
-                WakeAlarmObj.intervalMil = 1000 * 60 * 6;
+                TextView Reached100At = findViewById(R.id.textView3);
+                Reached100At.setText("starting light at: --:--");
+                WakeAlarm.alarmTimes = 0;
+                WakeAlarm.intervalMil = 1000 * 60 * 6;
             }
         });
 
         wakeTimeButton = findViewById(R.id.wakeTimeButton);
-
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab1 = (FloatingActionButton) findViewById(R.id.offButton);
@@ -154,10 +168,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static MainActivity getInstance(){
-        return mainActivity;
-    }
-
     public ConsumerIrManager getInfraRed(){
         return infraRed; }
 
@@ -165,20 +175,43 @@ public class MainActivity extends AppCompatActivity {
     {
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
         {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
             {
                 hour = selectedHour;
                 minute = selectedMinute;
                 wakeTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
+                if ((minute - 32) < 0)
+                {
+                    hour -= 1;
+                    minute += 28;
+                }
+                else
+                {
+                    minute -= 32;
+                }
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-                        timePicker.getHour(), timePicker.getMinute(), 0);
+
+                //If it's a morning alarm check to add +1 to day of month MIGHT NOT WORK ON END OF MONTHS!!!
+                if (LocalTime.now().getHour() > hour) {
+                    Toast.makeText(MainActivity.this, String.format("Morning alarm!"), Toast.LENGTH_LONG).show();
+                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH+1),
+                            hour, minute, 0);
+                }
+                else{
+                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                            hour, minute, 0);
+                }
+                RTCMillis = calendar.getTimeInMillis();
+                TextView Reached100At = findViewById(R.id.textView3);
+
+                Reached100At.setText(String.format(Locale.getDefault(), "starting light at: %02d:%02d",hour, minute));
+
                 setAlarm(calendar.getTimeInMillis());
+
             }
         };
-
-        // int style = AlertDialog.THEME_HOLO_DARK;
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, /*style,*/ onTimeSetListener, hour, minute, true);
 
@@ -194,11 +227,15 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, WakeAlarm.class);
 
         //creating a pending intent using the intent
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
 
         //setting the alarm
-        am.setExact(AlarmManager.RTC_WAKEUP, time, pi); // setExact, before was only set
-        Toast.makeText(this, String.format("Alarm is set [#{0}]", WakeAlarm.alarmTimes), Toast.LENGTH_SHORT).show();
+        AlarmManager.AlarmClockInfo aci = new AlarmManager.AlarmClockInfo(time, pi);
+        am.setAlarmClock(aci, pi);
+        //OLD METHOD
+        //am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pi);
+
+        Toast.makeText(this, String.format("Alarm is set [#%d]", WakeAlarm.alarmTimes), Toast.LENGTH_SHORT).show();
     }
     private void animateFab(){
         if (isOpen){
