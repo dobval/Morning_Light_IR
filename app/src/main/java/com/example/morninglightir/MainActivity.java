@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 //If it's a morning alarm check to add +1 to day of month MIGHT NOT WORK ON END OF MONTHS!!!
                 if (LocalTime.now().getHour() > hour) {
                     Toast.makeText(MainActivity.this, String.format("Morning alarm!"), Toast.LENGTH_LONG).show();
-                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH+1),
+                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)+1,
                             hour, minute, 0);
                 }
                 else{
