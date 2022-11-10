@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
                 PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, 0);
                 if (am == null)
                 {
+                    final MediaPlayer r2d2 = MediaPlayer.create(MainActivity.this, R.raw.r2d2);
+                    r2d2.start();
                     am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     Toast.makeText(getApplicationContext(), "Alarm already cancelled", Toast.LENGTH_SHORT).show();
                     am.cancel(pi);
@@ -115,6 +117,9 @@ public class MainActivity extends AppCompatActivity {
                     am.cancel(pi);
                     am = null;
                     Toast.makeText(getApplicationContext(), "Alarm cancelled", Toast.LENGTH_SHORT).show();
+                    final MediaPlayer lightSaberRetract = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_retract);
+                    lightSaberRetract.start();
+                    wakeTimeButton.setText(String.format(Locale.getDefault(), "Select Time"));
                 }
                 TextView Reached100At = findViewById(R.id.textView3);
                 Reached100At.setText("starting light at: -- : --");
@@ -179,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
             {
-                final MediaPlayer lightSaber = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_sound);
+                final MediaPlayer lightSaber = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_ignite);
                 lightSaber.start();
                 hour = selectedHour;
                 minute = selectedMinute;
@@ -237,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
         //OLD METHOD
         //am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pi);
 
-        Toast.makeText(this, String.format("Alarm is set [#%d]", WakeAlarm.alarmTimes), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, String.format("Alarm is set"), Toast.LENGTH_SHORT).show();
     }
     private void animateFab(){
         if (isOpen){
