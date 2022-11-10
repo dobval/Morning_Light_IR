@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
-    int frequency = 32222; //32KHz
+    int frequency = 38222; //KHz
     int[] offIR = {9000, 4500, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562,
             562, 562, 562, 562, 1688, 562, 1688, 562, 1688, 562, 1688, 562, 562, 562, 1688, 562,
             1688, 562, 1688, 562, 562, 562, 1688, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562,
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Alarm cancelled", Toast.LENGTH_SHORT).show();
                 }
                 TextView Reached100At = findViewById(R.id.textView3);
-                Reached100At.setText("starting light at: --:--");
+                Reached100At.setText("starting light at: -- : --");
                 WakeAlarm.alarmTimes = 0;
                 WakeAlarm.intervalMil = 1000 * 60 * 6;
             }

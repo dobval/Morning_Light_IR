@@ -18,7 +18,7 @@ public class WakeAlarm extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        int frequency = 32222; //32KHz
+        int frequency = 38222; //KHz
         int[] tenIR = {9000, 4500, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562, 562,
                 562, 562, 562, 562, 562, 1688, 562, 1688, 562, 1688, 562, 1688, 562, 562, 562, 1688,
                 562, 1688, 562, 1688, 562, 1688, 562, 562, 562, 1688, 562, 562, 562, 1688, 562, 562,
@@ -55,7 +55,7 @@ public class WakeAlarm extends BroadcastReceiver{
             Toast.makeText(context, "Alarm finished", Toast.LENGTH_SHORT).show();
 
             TextView Reached100At = MainActivity.getmInstanceActivity().findViewById(R.id.textView3);
-            Reached100At.setText("starting light at: --:--");
+            Reached100At.setText("starting light at: -- : --");
             //resetting
             alarmTimes = 0;
             intervalMil = 1000 * 60 * 6;
