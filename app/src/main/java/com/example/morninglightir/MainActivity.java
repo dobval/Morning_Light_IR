@@ -224,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
 
         timePickerDialog.setTitle("Select Time");
         timePickerDialog.show();
+        final MediaPlayer r2d2Select = MediaPlayer.create(MainActivity.this, R.raw.r2d2_select);
+        r2d2Select.start();
 
     }
     public void setAlarm(long time) {
