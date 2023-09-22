@@ -33,6 +33,7 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="15dp"
         android:backgroundTint="@color/purple_500"
+        android:contentDescription="@string/open_remote_button"
         android:tint="#000000"
         app:fabSize="auto"
         app:srcCompat="@android:drawable/ic_menu_mylocation"
@@ -41,18 +42,22 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/offButton"
-        android:layout_width="44dp"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
         android:backgroundTint="@color/purple_500"
-        android:visibility="invisible"
         android:clickable="true"
-        app:fabSize="mini"
+        android:contentDescription="@string/power_button_turn_off"
+        android:visibility="invisible"
+        app:ensureMinTouchTargetSize="true"
+        app:fabCustomSize="50dp"
+        app:fabSize="auto"
         app:layout_anchor="@+id/fab"
         app:layout_anchorGravity="center"
         app:srcCompat="@android:drawable/ic_lock_power_off"
         app:useCompatPadding="false"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:visibility="invisible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/upArrow"
@@ -60,14 +65,16 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="250dp"
         android:backgroundTint="@color/purple_500"
-        android:visibility="invisible"
         android:clickable="true"
+        android:contentDescription="@string/arrow_up_increase_brightness"
+        android:visibility="invisible"
         app:fabSize="mini"
         app:layout_anchor="@+id/fab"
         app:layout_anchorGravity="center"
         app:srcCompat="@android:drawable/arrow_up_float"
         app:useCompatPadding="false"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/downArrow"
@@ -75,21 +82,23 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="175dp"
         android:backgroundTint="@color/purple_500"
-        android:visibility="invisible"
         android:clickable="true"
+        android:contentDescription="@string/arrow_down_decrease_brightness"
+        android:visibility="invisible"
         app:fabSize="mini"
         app:layout_anchor="@+id/fab"
         app:layout_anchorGravity="center"
         app:srcCompat="@android:drawable/arrow_down_float"
         app:useCompatPadding="false"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/wakeTimeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="popTimePicker"
-        android:text="Select Time"
+        android:text="@string/select_time"
         android:translationY="75dp"
         app:layout_anchor="@+id/appBarLayout"
         app:layout_anchorGravity="bottom|center" />
@@ -100,7 +109,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:enabled="true"
-        android:text="Turn Off"
+        android:text="@string/turn_off"
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="center" />
 
@@ -108,7 +117,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="124dp"
-        android:text="starting light at: -- : --"
+        android:text="@string/starting_light_at"
         android:textAllCaps="false"
         android:textSize="24sp"
         android:textStyle="bold|italic"

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.morninglightir">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.TRANSMIT_IR" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+
 
     <application
         android:allowBackup="true"
@@ -15,11 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MorningLightIR"
-        tools:targetApi="31">
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.MorningLightIR.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +30,8 @@
         <receiver
             android:name=".WakeAlarm"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="android.permission.TRANSMIT_IR" />
     </application>
 
 </manifest>
