@@ -1,5 +1,5 @@
 # Morning_Light_IR
-Sunset LED Lights Simulation
+Sunrise LED Lights Simulation
 
 *Wake up fresh!*
 
