@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Locale;
-
 public class WakeAlarm extends BroadcastReceiver{
 
     static byte alarmTimes = 0;
@@ -49,7 +47,7 @@ public class WakeAlarm extends BroadcastReceiver{
             //creating a new intent specifying the broadcast receiver
             Intent i = new Intent(context, WakeAlarm.class);
             //creating a pending intent using the intent
-            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
+            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
             am.cancel(pi);
 
             Toast.makeText(context, "Alarm finished", Toast.LENGTH_SHORT).show();

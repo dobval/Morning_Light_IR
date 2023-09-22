@@ -1,41 +1,34 @@
 package com.example.morninglightir;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.hardware.ConsumerIrManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.morninglightir.databinding.ActivityMainBinding;
-
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
-
-import android.app.AlarmManager;
-import android.app.TimePickerDialog;
-import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.lang.ref.WeakReference;
 import java.time.LocalTime;
-import java.util.Locale;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -102,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), WakeAlarm.class);
-                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, 0);
+                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, PendingIntent.FLAG_IMMUTABLE);
                 if (am == null)
                 {
                     final MediaPlayer r2d2 = MediaPlayer.create(MainActivity.this, R.raw.r2d2);
@@ -130,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
 
         wakeTimeButton = findViewById(R.id.wakeTimeButton);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab1 = (FloatingActionButton) findViewById(R.id.offButton);
-        fab2 = (FloatingActionButton) findViewById(R.id.downArrow);
-        fab3 = (FloatingActionButton) findViewById(R.id.upArrow);
+        fab = findViewById(R.id.fab);
+        fab1 = findViewById(R.id.offButton);
+        fab2 = findViewById(R.id.downArrow);
+        fab3 = findViewById(R.id.upArrow);
 
         toBottom = AnimationUtils.loadAnimation(this, R.anim.to_bottom_anim);
         fromBottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom_anim);
@@ -180,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
     {
         TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
         {
-            @RequiresApi(api = Build.VERSION_CODES.O)
+            //WAS NEEDED BEFORE, NOW THE APP ONLY BUILDS FOR SDK>=26
+            //@RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
             {
@@ -236,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, WakeAlarm.class);
 
         //creating a pending intent using the intent
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
 
         //setting the alarm
         AlarmManager.AlarmClockInfo aci = new AlarmManager.AlarmClockInfo(time, pi);
