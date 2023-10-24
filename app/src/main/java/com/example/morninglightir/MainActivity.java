@@ -13,7 +13,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,34 +90,31 @@ public class MainActivity extends AppCompatActivity {
 
         OffButton = findViewById(R.id.OffButton);
 
-        OffButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), WakeAlarm.class);
-                PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, PendingIntent.FLAG_IMMUTABLE);
-                if (am == null)
-                {
-                    final MediaPlayer r2d2 = MediaPlayer.create(MainActivity.this, R.raw.r2d2);
-                    r2d2.start();
-                    am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                    Toast.makeText(getApplicationContext(), "Alarm already cancelled", Toast.LENGTH_SHORT).show();
-                    am.cancel(pi);
-                    am = null;
-                }
-                else
-                {
-                    am.cancel(pi);
-                    am = null;
-                    Toast.makeText(getApplicationContext(), "Alarm cancelled", Toast.LENGTH_SHORT).show();
-                    final MediaPlayer lightSaberRetract = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_retract);
-                    lightSaberRetract.start();
-                    wakeTimeButton.setText(String.format(Locale.getDefault(), "Select Time"));
-                }
-                TextView Reached100At = findViewById(R.id.textView3);
-                Reached100At.setText("starting light at: -- : --");
-                WakeAlarm.alarmTimes = 0;
-                WakeAlarm.intervalMil = 1000 * 60 * 6;
+        OffButton.setOnClickListener(view -> {
+            Intent i = new Intent(getApplicationContext(), WakeAlarm.class);
+            PendingIntent pi = PendingIntent.getBroadcast(getApplicationContext(), 0, i, PendingIntent.FLAG_IMMUTABLE);
+            if (am == null)
+            {
+                final MediaPlayer r2d2 = MediaPlayer.create(MainActivity.this, R.raw.r2d2);
+                r2d2.start();
+                am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Toast.makeText(getApplicationContext(), "Alarm already cancelled", Toast.LENGTH_SHORT).show();
+                am.cancel(pi);
+                am = null;
             }
+            else
+            {
+                am.cancel(pi);
+                am = null;
+                Toast.makeText(getApplicationContext(), "Alarm cancelled", Toast.LENGTH_SHORT).show();
+                final MediaPlayer lightSaberRetract = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_retract);
+                lightSaberRetract.start();
+                wakeTimeButton.setText("Select Time");
+            }
+            TextView Reached100At = findViewById(R.id.textView3);
+            Reached100At.setText("starting light at: -- : --");
+            WakeAlarm.alarmTimes = 0;
+            WakeAlarm.intervalMil = 1000 * 60 * 6;
         });
 
         wakeTimeButton = findViewById(R.id.wakeTimeButton);
@@ -136,33 +132,21 @@ public class MainActivity extends AppCompatActivity {
         final MediaPlayer swish = MediaPlayer.create(this, R.raw.swish);
         final MediaPlayer blast = MediaPlayer.create(this, R.raw.blast);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                animateFab();
-                swish.start();
-            }
+        fab.setOnClickListener(view -> {
+            animateFab();
+            swish.start();
         });
-        fab1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                infraRed.transmit(frequency, offIR);
-                blast.start();
-            }
+        fab1.setOnClickListener(view -> {
+            infraRed.transmit(frequency, offIR);
+            blast.start();
         });
-        fab2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                infraRed.transmit(frequency, downIR);
-                blast.start();
-            }
+        fab2.setOnClickListener(view -> {
+            infraRed.transmit(frequency, downIR);
+            blast.start();
         });
-        fab3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                infraRed.transmit(frequency, upIR);
-                blast.start();
-            }
+        fab3.setOnClickListener(view -> {
+            infraRed.transmit(frequency, upIR);
+            blast.start();
         });
     }
 
@@ -171,47 +155,42 @@ public class MainActivity extends AppCompatActivity {
 
     public void popTimePicker(View view)
     {
-        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener()
-        {
-            //WAS NEEDED BEFORE, NOW THE APP ONLY BUILDS FOR SDK>=26
-            //@RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute)
+        //WAS NEEDED BEFORE, NOW THE APP ONLY BUILDS FOR SDK>=26
+//@RequiresApi(api = Build.VERSION_CODES.O)
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = (timePicker, selectedHour, selectedMinute) -> {
+            final MediaPlayer lightSaber = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_ignite);
+            lightSaber.start();
+            hour = selectedHour;
+            minute = selectedMinute;
+            wakeTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
+            if ((minute - 32) < 0)
             {
-                final MediaPlayer lightSaber = MediaPlayer.create(MainActivity.this, R.raw.lightsaber_ignite);
-                lightSaber.start();
-                hour = selectedHour;
-                minute = selectedMinute;
-                wakeTimeButton.setText(String.format(Locale.getDefault(), "%02d:%02d",hour, minute));
-                if ((minute - 32) < 0)
-                {
-                    hour -= 1;
-                    minute += 28;
-                }
-                else
-                {
-                    minute -= 32;
-                }
-                Calendar calendar = Calendar.getInstance();
-
-                //If it's a morning alarm check to add +1 to day of month MIGHT NOT WORK ON END OF MONTHS!!!
-                if (LocalTime.now().getHour() > hour) {
-                    Toast.makeText(MainActivity.this, String.format("Morning alarm!"), Toast.LENGTH_LONG).show();
-                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)+1,
-                            hour, minute, 0);
-                }
-                else{
-                    calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-                            hour, minute, 0);
-                }
-                RTCMillis = calendar.getTimeInMillis();
-                TextView Reached100At = findViewById(R.id.textView3);
-
-                Reached100At.setText(String.format(Locale.getDefault(), "starting light at: %02d:%02d",hour, minute));
-
-                setAlarm(calendar.getTimeInMillis());
-
+                hour -= 1;
+                minute += 28;
             }
+            else
+            {
+                minute -= 32;
+            }
+            Calendar calendar = Calendar.getInstance();
+
+            //If it's a morning alarm check to add +1 to day of month MIGHT NOT WORK ON END OF MONTHS!!!
+            if (LocalTime.now().getHour() > hour) {
+                Toast.makeText(MainActivity.this, "Morning alarm!", Toast.LENGTH_LONG).show();
+                calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)+1,
+                        hour, minute, 0);
+            }
+            else{
+                calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+                        hour, minute, 0);
+            }
+            RTCMillis = calendar.getTimeInMillis();
+            TextView Reached100At = findViewById(R.id.textView3);
+
+            Reached100At.setText(String.format(Locale.getDefault(), "starting light at: %02d:%02d",hour, minute));
+
+            setAlarm(calendar.getTimeInMillis());
+
         };
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, /*style,*/ onTimeSetListener, hour, minute, true);
@@ -238,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         //OLD METHOD
         //am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pi);
 
-        Toast.makeText(this, String.format("Alarm is set"), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Alarm is set", Toast.LENGTH_SHORT).show();
     }
     private void animateFab(){
         if (isOpen){
